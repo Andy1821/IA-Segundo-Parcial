@@ -1,0 +1,50 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Oct 10 10:03:28 2020
+
+@author: Andrés Alexis Bravo Mesta
+"""
+recorridos = []
+colores = ['verde', 'azul', 'amarillo', 'negro', 'rojo']
+nodos = ['NL', 'TMPS', 'VCZ', 'SLP', 'ZAC', 'COAH', 'CHIH']
+mapa = {
+             'NL':{'adyacentes':['TMPS', 'SLP', 'COAH'], 'color':'amarillo'},
+             'TMPS':{'adyacentes':['NL', 'SLP', 'VCZ'], 'color':'amarillo'},
+             'VCZ':{'adyacentes':['TMPS', 'SLP'], 'color':'negro'},
+             'SLP':{'adyacentes':['NL', 'TMPS', 'VCZ', 'ZAC'], 'color':'negro'},
+             'ZAC':{'adyacentes':['SLP', 'COAH'], 'color':'negro'},
+             'COAH':{'adyacentes':['NL', 'ZAC', 'CHIH'], 'color':'verde'},
+             'CHIH':{'adyacentes':['COAH'], 'color':'verde'}
+	}
+
+def DFS():
+    origen = 'NL'
+    costo = recorrerNodo(origen)
+    return costo
+
+def recorrerNodo(nodo):
+    costo = 0
+    colorRepetido = []
+    cambiarColor = 0
+    for adyacente in mapa[nodo]['adyacentes']:
+        colorRepetido.append(mapa[adyacente]['color'])
+        if(mapa[nodo]['color'] == mapa[adyacente]['color']):
+            cambiarColor = 1
+    if(cambiarColor == 1):
+        for color in colores:
+            if(color not in colorRepetido):
+                mapa[nodo]['color'] = color
+                costo = costo + cambiarColor
+                break
+    recorridos.append(nodo)
+    for hijo in mapa[nodo]['adyacentes']:
+        if hijo not in recorridos:
+            costo = costo + recorrerNodo(hijo)
+    return costo
+
+#Ejecución de la función
+costo = DFS()
+print('\nEl costo de resolver el algoritmo ha sido de ' + str(costo) + '.')
+print('\nNuevos colores de los estados:')
+for nodo in nodos:
+    print('Color de ' + nodo + ': ' + mapa[nodo]['color'])
